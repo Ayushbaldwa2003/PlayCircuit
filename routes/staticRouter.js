@@ -15,7 +15,7 @@ router.get("/login", (req, res) => {
 
 
 router.get("/nim", (req, res) => {
-  res.render("games/nim");
+  res.render("games/nim/home");
 });
 
 module.exports=router
