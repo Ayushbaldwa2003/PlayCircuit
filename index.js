@@ -9,14 +9,15 @@ const http = require('http');
 const staticRoute = require("./routes/staticRouter");
 const userRoute= require("./routes/user");
 
-connectToMongoDB('mongodb://127.0.0.1:27017/multiplayer-gaming-site').
-then(()=>console.log('Connected to MongoDB'))
+const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/multiplayer-gaming-site';
+connectToMongoDB(mongoUri)
+.then(()=>console.log('Connected to MongoDB'))
 .catch(err=>console.log(err));
 
 const app=express();
 const server = http.createServer(app);
 const io = new Server(server);
-const PORT=5100;
+const PORT = process.env.PORT || 5100;
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
