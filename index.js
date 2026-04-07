@@ -11,9 +11,13 @@ const staticRoute = require("./routes/staticRouter");
 const userRoute= require("./routes/user");
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/multiplayer-gaming-site';
-connectToMongoDB(mongoUri)
-.then(()=>console.log('Connected to MongoDB'))
-.catch(err=>console.log(err));
+const jwtSecret = process.env.JWT_SECRET || 'dev_secret';
+if (!process.env.MONGO_URI) {
+  console.warn('Warning: MONGO_URI is not set. Local MongoDB will be used when available.');
+}
+if (!process.env.JWT_SECRET) {
+  console.warn('Warning: JWT_SECRET is not set. Using default JWT secret for development only.');
+}
 
 const app=express();
 const server = http.createServer(app);
@@ -34,6 +38,14 @@ app.use("/game",require("./routes/game"));
 // Socket.IO setup
 require('./sockets/nimsocket')(io);
 
-server.listen(PORT,()=>{
-    console.log(`Server Started at PORT: ${PORT}`)
-})
+connectToMongoDB(mongoUri)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    server.listen(PORT, () => {
+      console.log(`Server Started at PORT: ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
+  });
