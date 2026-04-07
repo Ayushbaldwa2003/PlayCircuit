@@ -8,12 +8,15 @@ const { Server } = require('socket.io');
 const http = require('http');
 
 const staticRoute = require("./routes/staticRouter");
-const userRoute= require("./routes/user");
+const userRoute = require("./routes/user");
+const { normalizeMongoUri } = require("./connect");
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/multiplayer-gaming-site';
+const rawMongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.DATABASE_URL;
+const mongoUri = normalizeMongoUri(rawMongoUri) || 'mongodb://127.0.0.1:27017/multiplayer-gaming-site';
 const jwtSecret = process.env.JWT_SECRET || 'dev_secret';
-if (!process.env.MONGO_URI) {
-  console.warn('Warning: MONGO_URI is not set. Local MongoDB will be used when available.');
+
+if (!rawMongoUri) {
+  console.warn('Warning: No remote MongoDB URI set. Using local fallback for development.');
 }
 if (!process.env.JWT_SECRET) {
   console.warn('Warning: JWT_SECRET is not set. Using default JWT secret for development only.');
