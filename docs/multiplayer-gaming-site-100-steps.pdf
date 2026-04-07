@@ -1,0 +1,403 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Length 2801 >>
+stream
+BT
+/F1 11 Tf
+50 742 Td
+14 TL
+(MULTIPLAYER GAMING SITE: 100 SMALL STEPS) Tj
+T*
+() Tj
+T*
+() Tj
+T*
+(This roadmap is designed for building your site from scratch with Node.js, Express,) Tj
+T*
+(WebSocket, MongoDB, EJS, and vanilla JavaScript. Follow the steps in order. Each step is) Tj
+T*
+(intentionally small so you can build with confidence.) Tj
+T*
+() Tj
+T*
+(PHASE 1: PROJECT SETUP) Tj
+T*
+() Tj
+T*
+(1. Create the project folder and initialize it with `npm init -y`.) Tj
+T*
+(2. Rename the project in `package.json` to something clear like `multiplayer-gaming-site`.) Tj
+T*
+(3. Set `"main"` to `server.js` instead of `index.js`.) Tj
+T*
+(4. Create a `.gitignore` file for `node_modules`, `.env`, logs, and OS files.) Tj
+T*
+(5. Create the base folders: `config`, `src`, `routes`, `views`, `public`, `tests`, `docs`.) Tj
+T*
+(6. Install core dependencies: `express`, `mongoose`, `dotenv`, `cookie-parser`,) Tj
+T*
+(`express-session`, `bcryptjs`.) Tj
+T*
+(7. Install realtime and utility dependencies: `ws` or `socket.io`, `connect-mongo`,) Tj
+T*
+(`morgan`, `helmet`, `compression`.) Tj
+T*
+(8. Install development dependencies: `nodemon` and a test runner such as `jest`.) Tj
+T*
+(9. Add scripts in `package.json` for `dev`, `start`, and `test`.) Tj
+T*
+(10. Create `server.js` as the entry point that starts the HTTP server.) Tj
+T*
+() Tj
+T*
+(PHASE 2: APP FOUNDATION) Tj
+T*
+() Tj
+T*
+(11. Create `app.js` to configure Express separately from the server startup.) Tj
+T*
+(12. In `app.js`, enable `express.urlencoded\(\)` and `express.json\(\)`.) Tj
+T*
+(13. Add `cookie-parser` middleware.) Tj
+T*
+(14. Add `helmet` middleware for basic security headers.) Tj
+T*
+(15. Add `compression` middleware for faster responses.) Tj
+T*
+(16. Add `morgan` for development request logging.) Tj
+T*
+(17. Set the view engine to `ejs`.) Tj
+T*
+(18. Point Express to the `views` folder.) Tj
+T*
+(19. Expose the `public` folder with `express.static\(\)`.) Tj
+T*
+(20. Export the configured app from `app.js`.) Tj
+T*
+() Tj
+T*
+(PHASE 3: ENVIRONMENT AND DATABASE) Tj
+T*
+() Tj
+T*
+(21. Create a `.env` file for local secrets and config.) Tj
+T*
+(22. Create `.env.example` with placeholder values for future setup.) Tj
+T*
+(23. Add `PORT`, `MONGO_URI`, `SESSION_SECRET`, and `NODE_ENV` to the env files.) Tj
+T*
+(24. Create `config/env.js` to read and validate environment variables.) Tj
+T*
+(25. Create `config/db.js` to connect to MongoDB using Mongoose.) Tj
+T*
+(26. Call the DB connection before starting the server.) Tj
+T*
+(27. Log a clear success message when MongoDB connects.) Tj
+T*
+(28. Log a clear error message and exit if DB connection fails.) Tj
+T*
+(29. Create `config/session.js` for shared session configuration.) Tj
+T*
+(30. Store sessions in MongoDB with `connect-mongo`.) Tj
+T*
+() Tj
+T*
+(PHASE 4: FOLDER STRUCTURE AND CONVENTIONS) Tj
+ET
+endstream
+endobj
+3 0 obj
+<< /Type /Page /Parent 10 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
+endobj
+4 0 obj
+<< /Length 2986 >>
+stream
+BT
+/F1 11 Tf
+50 742 Td
+14 TL
+() Tj
+T*
+(31. Inside `src`, create `modules`, `middlewares`, `services`, `utils`, and `sockets`.) Tj
+T*
+(32. Inside `src/modules`, create folders for `auth`, `users`, `games`, `chat`, `friends`,) Tj
+T*
+(`leaderboard`, and `matchmaking`.) Tj
+T*
+(33. Decide a naming convention like `feature.controller.js`, `feature.service.js`,) Tj
+T*
+(`feature.routes.js`.) Tj
+T*
+(34. Keep all database models inside their feature folders.) Tj
+T*
+(35. Keep shared helpers in `src/utils`.) Tj
+T*
+(36. Keep shared middlewares in `src/middlewares`.) Tj
+T*
+(37. Keep WebSocket bootstrapping in `src/sockets/index.js`.) Tj
+T*
+(38. Create `routes/index.js` for mounting all HTTP routes in one place.) Tj
+T*
+(39. Keep browser-side JavaScript in `public/js`.) Tj
+T*
+(40. Keep all page templates in `views/pages` and reusable UI parts in `views/partials`.) Tj
+T*
+() Tj
+T*
+(PHASE 5: BASIC PAGES AND LAYOUT) Tj
+T*
+() Tj
+T*
+(41. Create a base layout file such as `views/layouts/main.ejs`.) Tj
+T*
+(42. Create shared partials: `navbar.ejs`, `footer.ejs`, and `flash.ejs` if needed.) Tj
+T*
+(43. Create a simple home page at `views/pages/home.ejs`.) Tj
+T*
+(44. Create login and register pages.) Tj
+T*
+(45. Create a lobby page where logged-in users will enter multiplayer mode.) Tj
+T*
+(46. Create a local game page for guests who want to play with a bot.) Tj
+T*
+(47. Create placeholder pages for friends, chat, leaderboard, and profile.) Tj
+T*
+(48. Add a common CSS file in `public/css/style.css`.) Tj
+T*
+(49. Add a common frontend file in `public/js/main.js`.) Tj
+T*
+(50. Confirm all pages render correctly through Express routes.) Tj
+T*
+() Tj
+T*
+(PHASE 6: USER MODEL AND AUTHENTICATION) Tj
+T*
+() Tj
+T*
+(51. Create `src/modules/users/user.model.js`.) Tj
+T*
+(52. Add fields like `username`, `email`, `passwordHash`, `avatar`, `rating`, and) Tj
+T*
+(`friendsCount`.) Tj
+T*
+(53. Add timestamps to the user schema.) Tj
+T*
+(54. Add unique indexes for `username` and `email`.) Tj
+T*
+(55. Create `src/modules/auth/auth.validation.js` to validate register and login input.) Tj
+T*
+(56. Create `auth.service.js` to handle password hashing and account lookup.) Tj
+T*
+(57. Use `bcryptjs` to hash passwords during registration.) Tj
+T*
+(58. Create `auth.controller.js` for register, login, and logout handlers.) Tj
+T*
+(59. Create `auth.routes.js` and mount it under `/auth`.) Tj
+T*
+(60. Use sessions so logged-in users stay authenticated between requests.) Tj
+T*
+() Tj
+T*
+(PHASE 7: AUTH MIDDLEWARES AND PROTECTED ROUTES) Tj
+T*
+() Tj
+T*
+(61. Create `auth.middleware.js` to allow only logged-in users.) Tj
+T*
+(62. Create `guest.middleware.js` for pages that should only be visible before login.) Tj
+T*
+(63. Save the logged-in user ID in the session after successful login.) Tj
+T*
+(64. Load the current user from the session on every request.) Tj
+T*
+(65. Expose the current user to all EJS templates through `res.locals`.) Tj
+T*
+(66. Protect the lobby, profile, friends, chat, and multiplayer routes.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 10 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 3042 >>
+stream
+BT
+/F1 11 Tf
+50 742 Td
+14 TL
+(67. Keep the local bot route public so guests can access it.) Tj
+T*
+(68. Add logout functionality that destroys the session.) Tj
+T*
+(69. Handle invalid login attempts with clean messages.) Tj
+T*
+(70. Test the full register-login-logout flow in the browser.) Tj
+T*
+() Tj
+T*
+(PHASE 8: GAME DATA MODELS) Tj
+T*
+() Tj
+T*
+(71. Create `src/modules/games/game.model.js` to store completed match results.) Tj
+T*
+(72. Add fields such as `mode`, `players`, `winner`, `moves`, `duration`, and `status`.) Tj
+T*
+(73. Create a `chat.model.js` for direct or room messages.) Tj
+T*
+(74. Create a `friend.model.js` or store friend relationships in the user model.) Tj
+T*
+(75. Create a `leaderboard` strategy based on rating, wins, or score.) Tj
+T*
+(76. Decide whether leaderboard data is calculated live or cached in MongoDB.) Tj
+T*
+(77. Add indexes for fields used in sorting and lookups.) Tj
+T*
+(78. Create seed data scripts only if you need sample users and matches.) Tj
+T*
+(79. Keep schema logic lightweight; move business logic to services.) Tj
+T*
+(80. Test that all models save and read correctly from MongoDB.) Tj
+T*
+() Tj
+T*
+(PHASE 9: LOCAL BOT GAME FIRST) Tj
+T*
+() Tj
+T*
+(81. Start with one game only, for example Tic-Tac-Toe, Connect 4, or simple Chess-lite.) Tj
+T*
+(82. Create `game.engine.js` for the core game rules.) Tj
+T*
+(83. Create `game.state.js` to define the starting state and update rules.) Tj
+T*
+(84. Create `bot.engine.js` with simple AI for local guest play.) Tj
+T*
+(85. Build the browser UI for the game board in vanilla JS.) Tj
+T*
+(86. Add click handlers and render updates in `public/js/game/client.js`.) Tj
+T*
+(87. Make the guest local game work fully without login.) Tj
+T*
+(88. Prevent illegal moves in both frontend and backend logic.) Tj
+T*
+(89. Save local-game results only if you want analytics; otherwise keep them temporary.) Tj
+T*
+(90. Do a full manual test of the bot game from start to finish.) Tj
+T*
+() Tj
+T*
+(PHASE 10: WEBSOCKET AND MULTIPLAYER FOUNDATION) Tj
+T*
+() Tj
+T*
+(91. Attach a WebSocket server to the same HTTP server.) Tj
+T*
+(92. Create `src/sockets/index.js` to initialize and manage connections.) Tj
+T*
+(93. Authenticate WebSocket users using the existing session or a secure token.) Tj
+T*
+(94. Track connected users and their socket IDs in memory.) Tj
+T*
+(95. Create a room system for lobbies and active matches.) Tj
+T*
+(96. Add basic events like `joinLobby`, `createMatch`, `joinMatch`, `playerMove`, and) Tj
+T*
+(`leaveMatch`.) Tj
+T*
+(97. Broadcast game state updates to all players in a room.) Tj
+T*
+(98. Reuse the same `game.engine.js` rules for multiplayer validation.) Tj
+T*
+(99. Save the completed multiplayer match to MongoDB and update leaderboard stats.) Tj
+T*
+(100. After multiplayer works, build the extra features in this order: chat, friends,) Tj
+T*
+(leaderboard polishing, notifications, tests, security hardening, and deployment.) Tj
+T*
+() Tj
+T*
+(WHAT TO BUILD RIGHT AFTER STEP 100) Tj
+T*
+() Tj
+T*
+(* Add global chat and private chat with message history.) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 10 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 937 >>
+stream
+BT
+/F1 11 Tf
+50 742 Td
+14 TL
+(* Add friend requests, accept/reject flows, and online status.) Tj
+T*
+(* Add leaderboard filters by game mode and time period.) Tj
+T*
+(* Add profile pages with stats, match history, and friend list.) Tj
+T*
+(* Add stronger validation, rate limits, and anti-spam protection.) Tj
+T*
+(* Add test coverage for auth, game rules, and WebSocket events.) Tj
+T*
+(* Deploy Node/Express to a server and MongoDB to Atlas or another managed service.) Tj
+T*
+() Tj
+T*
+(SUGGESTED MILESTONES) Tj
+T*
+() Tj
+T*
+(* Milestone 1: Static pages render and MongoDB connects.) Tj
+T*
+(* Milestone 2: Users can register, log in, and access protected pages.) Tj
+T*
+(* Milestone 3: Guests can play a local bot game.) Tj
+T*
+(* Milestone 4: Logged-in users can play a live multiplayer match.) Tj
+T*
+(* Milestone 5: Social features and leaderboard are complete.) Tj
+T*
+(* Milestone 6: The app is tested, secured, and deployed.) Tj
+T*
+() Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 10 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R] /Count 4 >>
+endobj
+11 0 obj
+<< /Type /Catalog /Pages 10 0 R >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000079 00000 n 
+0000002932 00000 n 
+0000003059 00000 n 
+0000006097 00000 n 
+0000006224 00000 n 
+0000009318 00000 n 
+0000009445 00000 n 
+0000010433 00000 n 
+0000010560 00000 n 
+0000010636 00000 n 
+trailer
+<< /Size 12 /Root 11 0 R >>
+startxref
+10687
+%%EOF

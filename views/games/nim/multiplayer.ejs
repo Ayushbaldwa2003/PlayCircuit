@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiplayer Nim Game</title>
+  <link rel="stylesheet" href="/css/nim/multiplayer.css" />
+</head>
+<body>
+
+  <div id="menu" class="container">
+    <h1>Nim Game &mdash; Multiplayer</h1>
+    <p class="description">Choose how you want to play with others.</p>
+
+    <div class="button-grid">
+      <button id="playOnlineBtn">Play Online</button>
+      <button id="playFriendsBtn">Play with Friends</button>
+    </div>
+  </div>
+
+  <div id="friendsMenu" class="container hidden">
+    <h1>Play with Friends</h1>
+    <p class="description">Create a game or join an existing one.</p>
+
+    <div class="button-grid">
+      <button id="createGameBtn">Create Game</button>
+      <button id="joinGameBtn">Join Game</button>
+    </div>
+    <button id="backToMenuBtn" class="back-btn">Back</button>
+  </div>
+
+  <div id="joinGame" class="container hidden">
+    <h1>Join Game</h1>
+    <p class="description">Enter the game code shared by your friend.</p>
+
+    <input type="text" id="gameCodeInput" placeholder="Enter Game Code" maxlength="6" />
+    <button id="joinBtn">Join</button>
+    <button id="backToFriendsBtn" class="back-btn">Back</button>
+  </div>
+
+  <div id="game" class="container hidden">
+    <h1>Nim Game</h1>
+
+    <div id="waiting" class="waiting">
+      <p>Waiting for opponent...</p>
+    </div>
+
+    <div id="gameContent" class="hidden">
+      <h3 id="status">Waiting...</h3>
+
+      <div class="players">
+        <div class="player" id="player1">
+          <span class="name"><%= user.name %></span>
+          <span class="turn-indicator"></span>
+        </div>
+        <div class="vs">vs</div>
+        <div class="player" id="player2">
+          <span class="name">Opponent</span>
+          <span class="turn-indicator"></span>
+        </div>
+      </div>
+
+      <div class="stone-box">
+        <p class="stone-label">Remaining Stones</p>
+        <span id="sticks-count">17</span>
+      </div>
+
+      <p id="info"></p>
+
+      <div class="btn-group">
+        <button onclick="makeMove(1)">Remove 1</button>
+        <button onclick="makeMove(2)">Remove 2</button>
+        <button onclick="makeMove(3)">Remove 3</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <button id="rematchBtn" onclick="requestRematch()">Rematch</button>
+      <button id="leaveBtn" onclick="leaveGame()">Leave Game</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const user = <%- JSON.stringify(user) %>;
+  </script>
+  <script src="/js/nim/multiplayer.js"></script>
+
+</body>
+</html>
