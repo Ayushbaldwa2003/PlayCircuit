@@ -10,6 +10,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+  console.warn("⚠️  WARNING: GMAIL_USER or GMAIL_PASS environment variables not set!");
+  console.warn("⚠️  Email notifications may fail on Render or production.");
+  console.warn("⚠️  Set these in your Render environment variables for production.");
+}
+
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -23,8 +29,15 @@ function validatePassword(password) {
 }
 
 async function sendOtpEmail(email, otp) {
+  const gmailUser = process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com";
+  const gmailPass = process.env.GMAIL_PASS || "nsryicowrznbrcwi";
+  
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+    console.warn("Warning: GMAIL_USER or GMAIL_PASS not set. Using fallback or will fail.");
+  }
+  
   const mailOptions = {
-    from: process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com",
+    from: gmailUser,
     to: email,
     subject: "Your OTP verification code",
     text: `Your verification code is ${otp}. It is valid for 5 minutes.`,
@@ -97,7 +110,12 @@ async function handleUserSignup(req, res) {
       });
     }
 
-    await sendOtpEmail(email, otp);
+    try {
+      await sendOtpEmail(email, otp);
+    } catch (emailError) {
+      console.error("Email send error:", emailError.message);
+      console.warn("Proceeding to verification page despite email send failure.");
+    }
 
     return res.render("verify", {
       info: "OTP sent to your Gmail address. Enter it below within 5 minutes.",
@@ -133,7 +151,13 @@ async function handleUserLogin(req, res) {
       user.otp = otp;
       user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
       await user.save();
-      await sendOtpEmail(email, otp);
+      
+      try {
+        await sendOtpEmail(email, otp);
+      } catch (emailError) {
+        console.error("Email send error during login:", emailError.message);
+        console.warn("Proceeding to verification page despite email send failure.");
+      }
 
       return res.render("verify", {
         info: "Your account is not verified. We sent a fresh OTP to your Gmail.",
