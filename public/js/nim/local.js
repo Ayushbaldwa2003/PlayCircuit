@@ -1,4 +1,4 @@
-const TOTAL_STONES = 17;
+const TOTAL_STONES =Math.floor(Math.random() * (35 - 15 + 1)) + 15;
 
 let stones     = TOTAL_STONES;
 let playerTurn = true;
@@ -70,7 +70,8 @@ function botMove() {
   if (gameOver) return;
 
   const rem = stones % 4;
-  let pick  = rem === 0 ? 1 : rem;
+  const temp=Math.floor(Math.random() * 3) + 1;
+  let pick  = rem === 0 ? temp : rem;
   pick      = Math.min(Math.max(pick, 1), Math.min(stones, 3));
 
   stones    -= pick;

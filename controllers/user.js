@@ -9,6 +9,8 @@ async function handleUserSignup(req, res) {
       email,
       password,
     });
+    const token = setUser(user);
+    res.cookie("uid", token, { httpOnly: true });
     return res.redirect("/");
   } catch (error) {
     console.error('Signup error:', error);
