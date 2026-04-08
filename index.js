@@ -6,10 +6,10 @@ const {restrictToLoggedinUserOnly}=require("./middlewares/auth")
 const {connectToMongoDB}=require('./connect');
 const { Server } = require('socket.io');
 const http = require('http');
+const { normalizeMongoUri } = require("./connect");
 
 const staticRoute = require("./routes/staticRouter");
 const userRoute = require("./routes/user");
-const { normalizeMongoUri } = require("./connect");
 
 const rawMongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.DATABASE_URL;
 const mongoUri = normalizeMongoUri(rawMongoUri) || 'mongodb://127.0.0.1:27017/multiplayer-gaming-site';
@@ -25,7 +25,7 @@ if (!process.env.JWT_SECRET) {
 const app=express();
 const server = http.createServer(app);
 const io = new Server(server);
-const PORT = process.env.PORT || 5100;
+const PORT = process.env.PORT || 5500;
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 

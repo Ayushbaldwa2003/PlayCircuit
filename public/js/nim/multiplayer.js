@@ -1,6 +1,6 @@
 /* global io */
+/* global user */
 const socket = io();
-const user = window.user || { _id: '', name: 'Guest' };
 
 let currentRoom = null;
 let isMyTurn = false;
