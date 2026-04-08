@@ -108,10 +108,13 @@
             </p>
             <% } %>
                 <form action="/user/login" method="post">
+                    <% if (typeof error !== 'undefined') { %>
+                      <p style="color: red; text-align: center;"><%= error %></p>
+                    <% } %>
                     <label>Email</label>
-                    <input type="text" required name="email" />
+                    <input type="text" required name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" />
 
-                    <input type="hidden" name="redirectTo" value="<%= redirectTo || '' %>">
+                    <input type="hidden" name="redirectTo" value="<%= typeof redirectTo !== 'undefined' ? redirectTo : '' %>">
 
                     <label>Password</label>
                     <input type="text" required name="password" />
@@ -120,7 +123,7 @@
                 </form>
 
                 <div class="link">
-                    Don't have an account yet? <a href="/signup?<%= redirectTo ? 'redirectTo=' + encodeURIComponent(redirectTo) : '' %>">Signup</a>
+                    Don't have an account yet? <a href="/signup?<%= typeof redirectTo !== 'undefined' && redirectTo ? 'redirectTo=' + encodeURIComponent(redirectTo) : '' %>">Signup</a>
                 </div>
     </div>
 </body>
