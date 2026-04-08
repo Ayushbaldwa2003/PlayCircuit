@@ -1,9 +1,16 @@
 const User = require("../models/user");
 const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const { setUser } = require("../services/auth");
 
+const sendgridApiKey = process.env.SENDGRID_API_KEY ? process.env.SENDGRID_API_KEY.trim() : "";
 const gmailUserEnv = process.env.GMAIL_USER ? process.env.GMAIL_USER.trim() : "";
 const gmailPassEnv = process.env.GMAIL_PASS ? process.env.GMAIL_PASS.replace(/\s+/g, "").trim() : "";
+const emailFrom = process.env.EMAIL_FROM ? process.env.EMAIL_FROM.trim() : gmailUserEnv || "ayushbaldwa2003@gmail.com";
+
+if (sendgridApiKey) {
+  sgMail.setApiKey(sendgridApiKey);
+}
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -15,16 +22,10 @@ const transporter = nodemailer.createTransport({
   socketTimeout: 30000,
 });
 
-console.log("📧 Email Transporter initialized");
+console.log("📧 Email delivery configured");
+console.log("   SENDGRID_API_KEY set:", !!sendgridApiKey);
 console.log("   GMAIL_USER set:", !!gmailUserEnv);
-console.log("   GMAIL_PASS set:", !!gmailPassEnv);
-console.log("   Using:", gmailUserEnv ? "Environment variables" : "Fallback credentials (dev mode)");
-
-if (!gmailUserEnv || !gmailPassEnv) {
-  console.warn("⚠️  WARNING: GMAIL_USER or GMAIL_PASS environment variables not set or empty!");
-  console.warn("⚠️  Email notifications may fail on Render or production.");
-  console.warn("⚠️  Set these in your Render environment variables for production.");
-}
+console.log("   EMAIL_FROM:", emailFrom);
 
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -39,26 +40,48 @@ function validatePassword(password) {
 }
 
 async function sendOtpEmail(email, otp) {
-  const gmailUser = process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com";
-  const gmailPass = process.env.GMAIL_PASS || "nsryicowrznbrcwi";
-  
+  const subject = "Your OTP verification code";
+  const text = `Your verification code is ${otp}. It is valid for 5 minutes.`;
+
+  if (sendgridApiKey) {
+    console.log(`📧 Sending OTP with SendGrid to ${email}...`);
+    const msg = {
+      to: email,
+      from: emailFrom,
+      subject,
+      text,
+    };
+
+    try {
+      const [response] = await sgMail.send(msg);
+      console.log(`✅ SendGrid OTP sent successfully to ${email}`);
+      console.log(`   Status code: ${response.statusCode}`);
+      return response;
+    } catch (error) {
+      console.error(`❌ SendGrid failed to send OTP to ${email}:`);
+      console.error(`   Error: ${error.message}`);
+      if (error.response && error.response.body) {
+        console.error(`   Response body:`, error.response.body);
+      }
+      throw error;
+    }
+  }
+
+  console.log(`📧 Sending OTP with Gmail SMTP to ${email}...`);
   const mailOptions = {
-    from: gmailUser,
+    from: emailFrom,
     to: email,
-    subject: "Your OTP verification code",
-    text: `Your verification code is ${otp}. It is valid for 5 minutes.`,
+    subject,
+    text,
   };
-  
-  console.log(`📧 Attempting to send OTP to ${email}...`);
-  console.log(`   From: ${gmailUser}`);
-  
+
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✅ OTP sent successfully to ${email}`);
+    console.log(`✅ Gmail SMTP OTP sent successfully to ${email}`);
     console.log(`   Message ID: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error(`❌ Failed to send OTP to ${email}:`);
+    console.error(`❌ Gmail SMTP failed to send OTP to ${email}:`);
     console.error(`   Error: ${error.message}`);
     console.error(`   Code: ${error.code}`);
     throw error;
