@@ -8,7 +8,14 @@ const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com",
     pass: process.env.GMAIL_PASS || "nsryicowrznbrcwi",
   },
+  connectionTimeout: 10000,
+  socketTimeout: 10000,
 });
+
+console.log("📧 Email Transporter initialized");
+console.log("   GMAIL_USER set:", !!process.env.GMAIL_USER);
+console.log("   GMAIL_PASS set:", !!process.env.GMAIL_PASS);
+console.log("   Using:", process.env.GMAIL_USER ? "Environment variables" : "Fallback credentials (dev mode)");
 
 if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
   console.warn("⚠️  WARNING: GMAIL_USER or GMAIL_PASS environment variables not set!");
@@ -32,17 +39,27 @@ async function sendOtpEmail(email, otp) {
   const gmailUser = process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com";
   const gmailPass = process.env.GMAIL_PASS || "nsryicowrznbrcwi";
   
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-    console.warn("Warning: GMAIL_USER or GMAIL_PASS not set. Using fallback or will fail.");
-  }
-  
   const mailOptions = {
     from: gmailUser,
     to: email,
     subject: "Your OTP verification code",
     text: `Your verification code is ${otp}. It is valid for 5 minutes.`,
   };
-  return transporter.sendMail(mailOptions);
+  
+  console.log(`📧 Attempting to send OTP to ${email}...`);
+  console.log(`   From: ${gmailUser}`);
+  
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ OTP sent successfully to ${email}`);
+    console.log(`   Message ID: ${info.messageId}`);
+    return info;
+  } catch (error) {
+    console.error(`❌ Failed to send OTP to ${email}:`);
+    console.error(`   Error: ${error.message}`);
+    console.error(`   Code: ${error.code}`);
+    throw error;
+  }
 }
 
 async function handleUserSignup(req, res) {
@@ -113,8 +130,12 @@ async function handleUserSignup(req, res) {
     try {
       await sendOtpEmail(email, otp);
     } catch (emailError) {
-      console.error("Email send error:", emailError.message);
-      console.warn("Proceeding to verification page despite email send failure.");
+      console.error("❌ Email send error during signup:", emailError.message);
+      if (emailError.code === "EAUTH") {
+        console.error("   → Authentication failed. Check GMAIL_USER and GMAIL_PASS on Render.");
+      }
+      console.warn("⚠️  Proceeding to verification page despite email send failure.");
+      console.warn("⚠️  User will see verification page but may not receive OTP email.");
     }
 
     return res.render("verify", {
@@ -155,8 +176,12 @@ async function handleUserLogin(req, res) {
       try {
         await sendOtpEmail(email, otp);
       } catch (emailError) {
-        console.error("Email send error during login:", emailError.message);
-        console.warn("Proceeding to verification page despite email send failure.");
+        console.error("❌ Email send error during login:", emailError.message);
+        if (emailError.code === "EAUTH") {
+          console.error("   → Authentication failed. Check GMAIL_USER and GMAIL_PASS on Render.");
+        }
+        console.warn("⚠️  Proceeding to verification page despite email send failure.");
+        console.warn("⚠️  User will see verification page but may not receive OTP email.");
       }
 
       return res.render("verify", {
