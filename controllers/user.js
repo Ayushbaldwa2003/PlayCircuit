@@ -2,23 +2,26 @@ const User = require("../models/user");
 const nodemailer = require("nodemailer");
 const { setUser } = require("../services/auth");
 
+const gmailUserEnv = process.env.GMAIL_USER ? process.env.GMAIL_USER.trim() : "";
+const gmailPassEnv = process.env.GMAIL_PASS ? process.env.GMAIL_PASS.replace(/\s+/g, "").trim() : "";
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.GMAIL_USER || "ayushbaldwa2003@gmail.com",
-    pass: process.env.GMAIL_PASS || "nsryicowrznbrcwi",
+    user: gmailUserEnv || "ayushbaldwa2003@gmail.com",
+    pass: gmailPassEnv || "nsryicowrznbrcwi",
   },
-  connectionTimeout: 10000,
-  socketTimeout: 10000,
+  connectionTimeout: 30000,
+  socketTimeout: 30000,
 });
 
 console.log("📧 Email Transporter initialized");
-console.log("   GMAIL_USER set:", !!process.env.GMAIL_USER);
-console.log("   GMAIL_PASS set:", !!process.env.GMAIL_PASS);
-console.log("   Using:", process.env.GMAIL_USER ? "Environment variables" : "Fallback credentials (dev mode)");
+console.log("   GMAIL_USER set:", !!gmailUserEnv);
+console.log("   GMAIL_PASS set:", !!gmailPassEnv);
+console.log("   Using:", gmailUserEnv ? "Environment variables" : "Fallback credentials (dev mode)");
 
-if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-  console.warn("⚠️  WARNING: GMAIL_USER or GMAIL_PASS environment variables not set!");
+if (!gmailUserEnv || !gmailPassEnv) {
+  console.warn("⚠️  WARNING: GMAIL_USER or GMAIL_PASS environment variables not set or empty!");
   console.warn("⚠️  Email notifications may fail on Render or production.");
   console.warn("⚠️  Set these in your Render environment variables for production.");
 }
