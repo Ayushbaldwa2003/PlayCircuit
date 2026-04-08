@@ -89,11 +89,12 @@
         <label>Password</label>
         <input type="text" required name="password" />
 
+        <input type="hidden" name="redirectTo" value="<%= redirectTo || '' %>">
         <button type="submit">Create an account</button>
       </form>
 
       <div class="link">
-        Already have an account? <a href="/login">Login</a>
+        Already have an account? <a href="/login?<%= redirectTo ? 'redirectTo=' + encodeURIComponent(redirectTo) : '' %>">Login</a>
       </div>
     </div>
   </body>
